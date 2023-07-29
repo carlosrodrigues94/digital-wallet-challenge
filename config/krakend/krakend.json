@@ -2,7 +2,6 @@
     "version": 3,
     "name": "Wallet API Gateway",
     "port": 8080,
-    "cache_ttl": "3600s",
     "timeout": "3s",
     "extra_config": {
         "telemetry/logging": {
@@ -18,25 +17,6 @@
             "backend_disabled": false,
             "endpoint_disabled": false,
             "listen_address": ":8090"
-        },
-        "security/cors": {
-            "allow_origins": [
-                "http://192.168.99.100:3000",
-                "http://localhost:3000"
-            ],
-            "allow_methods": [
-                "POST",
-                "GET"
-            ],
-            "allow_headers": [
-                "Origin",
-                "Authorization",
-                "Content-Type"
-            ],
-            "expose_headers": [
-                "Content-Length"
-            ],
-            "max_age": "12h"
         }
     },
     "endpoints": [
@@ -50,7 +30,7 @@
             "backend": [
                 {
                     "host": [
-                        "statement_api:3000"
+                        "http://statement_api:3000"
                     ],
                     "url_pattern": "/statement",
                     "extra_config": {}
@@ -66,8 +46,9 @@
             ],
             "backend": [
                 {
+                    "disable_host_sanitize": true,
                     "host": [
-                        "deposit_api:3002"
+                        "http://deposit_api:3002"
                     ],
                     "url_pattern": "/deposits",
                     "extra_config": {}
@@ -84,7 +65,7 @@
             "backend": [
                 {
                     "host": [
-                        "withdrawal_api:3003"
+                        "http://withdrawal_api:3003"
                     ],
                     "url_pattern": "/withdrawals",
                     "extra_config": {}
