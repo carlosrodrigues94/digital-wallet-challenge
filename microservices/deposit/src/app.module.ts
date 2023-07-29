@@ -1,21 +1,27 @@
-import { Module } from '@nestjs/common';
-import { AppController, Queues } from './app.controller';
-import { AppService } from './app.service';
+import { ClientProxy, ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { Module } from '@nestjs/common';
+import { InfraModule } from '@/infra.module';
+import { KnexDepositRepository } from '@/infra/repositories/knex-deposit.repository';
+import { RabbitMQMessageBroker } from '@/infra/message-broker/rabbitmq.message-broker';
+import { knexConfig } from '@/config/knex.config';
+import { Events } from '@/data/enums/events';
+import { DbCreateDepositUseCaseFactory } from '@/presentation/factories/db-create-deposit-usecase.factory';
+import { CreateDepositController } from '@/presentation/controllers/create-deposit.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [knexConfig],
     }),
 
     ClientsModule.register([
       {
-        name: 'DEPOSIT_QUEUE_PUBLISHER',
+        name: 'DEPOSIT_CLIENT_PUBLISHER',
         transport: Transport.RMQ,
         options: {
-          queue: Queues.DEPOSIT_CREATED,
+          queue: Events.DEPOSIT_CREATED,
           urls: [
             {
               hostname: process.env.RABBITMQ_HOST,
@@ -27,8 +33,24 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         },
       },
     ]),
+    InfraModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [CreateDepositController],
+  providers: [
+    {
+      provide: DbCreateDepositUseCaseFactory,
+      inject: ['DEPOSIT_CLIENT_PUBLISHER', 'KNEX_DEPOSIT_REPOSITORY'],
+      useFactory: (
+        clientMessageBroker: ClientProxy,
+        knexDepositRepository: KnexDepositRepository,
+      ) => {
+        const messageBroker = new RabbitMQMessageBroker(clientMessageBroker);
+        return new DbCreateDepositUseCaseFactory(
+          messageBroker,
+          knexDepositRepository,
+        );
+      },
+    },
+  ],
 })
 export class AppModule {}
