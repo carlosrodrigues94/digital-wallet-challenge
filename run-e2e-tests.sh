@@ -1,6 +1,6 @@
 #!/bin/bash
 
-microservices=("deposit:deposit_api")
+microservices=("deposit:deposit_api" "withdraw:withdraw_api")
 
 run_migrations() {
   echo "Running End to End Tests for $1 (Container: $2)"

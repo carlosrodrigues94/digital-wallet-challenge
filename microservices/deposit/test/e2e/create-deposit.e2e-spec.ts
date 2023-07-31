@@ -7,17 +7,20 @@ import { randomUUID } from 'crypto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let moduleFixture: TestingModule;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
+      controllers: [],
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await app.init();
+    await new Promise((resolve) => setTimeout(() => resolve(app.init()), 5000));
   });
 
-  it('/deposits (POST)', () => {
+  it('/deposits (POST)', async () => {
+    console.log('ENV ===>', process.env.RABBITMQ_USER);
     const body: CreateDepositDTO = {
       amount: 100,
       source: 'pix',
@@ -25,7 +28,7 @@ describe('AppController (e2e)', () => {
       sourceTransactionId: 'pix-id',
       userId: randomUUID(),
     };
-    return request(app.getHttpServer())
+    return await request(app.getHttpServer())
       .post('/deposits')
       .send(body)
       .expect(201);

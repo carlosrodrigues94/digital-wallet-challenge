@@ -36,6 +36,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: admin
       RABBITMQ_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       PORT: 3000
       DB_NAME: statement_consult
       DB_USER: postgres
@@ -66,6 +69,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: admin
       RABBITMQ_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       PORT: 3001
       DB_NAME: statement_processor
       DB_USER: postgres
@@ -94,6 +100,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: admin
       RABBITMQ_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       PORT: 3002
       DB_NAME: deposit
       DB_USER: postgres
@@ -124,6 +133,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: admin
       RABBITMQ_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       PORT: 3003
       DB_NAME: withdraw
       DB_USER: postgres
@@ -132,6 +144,21 @@ services:
       DB_PORT: 5432
     networks:
       - "microservices_network"
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass "redis_password"
+    environment:
+      - REDIS_PASSWORD=redis_password
+    networks:
+      - microservices_network
+
+    volumes:
+      - cache:/data
 
   # RabbitMQ
   rabbitmq:
@@ -176,3 +203,4 @@ networks:
 
 volumes:
   development_data:
+  cache:

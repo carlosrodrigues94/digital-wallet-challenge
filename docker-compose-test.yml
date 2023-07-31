@@ -1,21 +1,21 @@
 version: "3.7"
 services:
-  # krakend_ce:
-  #   # Watch mode is only to use on development
-  #   image: devopsfaith/krakend:watch
-  #   container_name: krakend_ce
-  #   volumes:
-  #     - ./config/krakend:/etc/krakend
-  #   ports:
-  #     - "1234:1234"
-  #     - "8080:8080"
-  #     - "8090:8090"
-  #   depends_on:
-  #     - rabbitmq_test
-  #     - database_test
-  #   command: ["run", "-d", "-c", "/etc/krakend/krakend.json"]
-  #   networks:
-  #     - "microservices_network"
+  krakend_ce:
+    #Watch mode is only to use on development
+    image: devopsfaith/krakend:watch
+    container_name: krakend_ce
+    volumes:
+      - ./config/krakend:/etc/krakend
+    ports:
+      - "1234:1234"
+      - "8080:8080"
+      - "8090:8090"
+    depends_on:
+      - rabbitmq_test
+      - database_test
+    command: ["run", "-d", "-c", "/etc/krakend/krakend.json"]
+    networks:
+      - "microservices_network"
 
   # Statement-consult-api
   statement_consult_api:
@@ -37,6 +37,9 @@ services:
       RABBITMQ_USER: test_user
       RABBITMQ_PASSWORD: test_password
       PORT: 3000
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       DB_NAME: statement_consult
       DB_USER: postgres
       DB_PASSWORD: postgres
@@ -67,6 +70,9 @@ services:
       RABBITMQ_USER: test_user
       RABBITMQ_PASSWORD: test_password
       PORT: 3001
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       DB_NAME: statement_processor
       DB_USER: postgres
       DB_PASSWORD: postgres
@@ -94,6 +100,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: test_user
       RABBITMQ_PASSWORD: test_password
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       PORT: 3002
       DB_NAME: deposit
       DB_USER: postgres
@@ -124,6 +133,9 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: test_user
       RABBITMQ_PASSWORD: test_password
+      REDIS_HOST: redis_test
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis_password
       PORT: 3003
       DB_NAME: withdraw
       DB_USER: postgres
@@ -151,6 +163,22 @@ services:
     logging:
       driver: "none"
 
+  # Redis
+  redis_test:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass "redis_password"
+    environment:
+      - REDIS_PASSWORD=redis_password
+    networks:
+      - microservices_network
+
+    volumes:
+      - testing_cache:/data
+
   # Postgres
   database_test:
     image: postgres:13-alpine
@@ -176,3 +204,4 @@ networks:
 
 volumes:
   testing_data:
+  testing_cache:

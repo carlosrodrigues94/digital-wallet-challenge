@@ -4,6 +4,7 @@
     "json",
     "ts"
   ],
+  "testTimeout": 15000,
   "rootDir": "../",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",

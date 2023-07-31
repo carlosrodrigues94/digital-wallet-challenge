@@ -1,3 +1,3 @@
-export enum Events {
-  DEPOSIT_CREATED = 'deposit.created.event',
+export enum PublisherEvents {
+  DEPOSIT_CREATED_EVENT = 'deposit.created.event',
 }
