@@ -15,7 +15,7 @@
 
 # Startup Info
 
-<pre align="start">
+<p align="start">
   After docker compose up command starts, the docker-compose.yml file will start the following containers:
   
   - krakend_ce
@@ -32,7 +32,7 @@ The automation of containers it will create a database for each microservice, in
 
 The applications also are ready to deal with retry of connections with RabbitMQ
 
-</pre>
+</p>
 
 # Running Tests
 
@@ -55,7 +55,7 @@ The applications also are ready to deal with retry of connections with RabbitMQ
 
 # Architecture
 
-<pre align="start">
+<p align="start">
 The project is based on the microservices architecture, where each microservice has its own database and is responsible for a specific business rules, the communication between the microservices is made by the RabbitMQ message broker with a Event Driven Architecture.
 Some concepts used:
 
@@ -65,7 +65,7 @@ Some concepts used:
 - Dependency inversion
 - Dependency injection
 
-</pre>
+</p>
 
 # Technologies
 
