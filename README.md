@@ -91,12 +91,12 @@ I also add a insomnia collection to help you test the api.
 
 # Disclaimer
 
-<pre align="start">
-
+<p align="start">
 1 - On my design i was considering implement more 3 services, Shop, Cancel and Value-Reversal but i didn't have time to implement them.
+</p>
+<p align="start">
 2 - I suffered with a bug with swagger ui that cannot mount the curl command to test the api, the problem occurs with properties that are number, for example the amount, i tried to fix it but i didn't found any solution for it.
-
-</pre>
+</p>
 
 # Thanks
 
