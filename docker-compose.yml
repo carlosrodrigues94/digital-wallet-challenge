@@ -19,7 +19,7 @@ services:
 
   # Swagger-ui
   swagger_ui:
-    image: swaggerapi/swagger-ui:unstable
+    image: swaggerapi/swagger-ui:latest
     container_name: swagger_ui
     ports:
       - "8081:8080"
