@@ -79,14 +79,12 @@ Some concepts used:
 
 # Documentation
 
-<pre align="start">
 - [Swagger](https://swagger.io/)
-
+<pre align="start">
 The comunication with the app works only throught the api gateway.
 The application port is 8080.
 Swagger UI port is 8081.
 I also add a insomnia collection to help you test the api.
-
 </pre>
 
 # Disclaimer
