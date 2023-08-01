@@ -80,6 +80,9 @@ Some concepts used:
 # Documentation
 
 - [Swagger](https://swagger.io/)
+
+- [Architecture](https://whimsical.com/pic-pay-technical-app-XhEsxJ8jkQyAjzcn2B3pkk)
+
 <p align="start">
 The comunication with the app works only throught the api gateway.
 The application port is 8080.
