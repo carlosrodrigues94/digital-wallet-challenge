@@ -55,6 +55,7 @@ The applications also are ready to deal with retry of connections with RabbitMQ
 
 # Architecture
 
+<pre align="start">
 The project is based on the microservices architecture, where each microservice has its own database and is responsible for a specific business rules, the communication between the microservices is made by the RabbitMQ message broker with a Event Driven Architecture.
 Some concepts used:
 
@@ -63,6 +64,8 @@ Some concepts used:
 - SOLID
 - Dependency inversion
 - Dependency injection
+
+</pre>
 
 # Technologies
 
@@ -76,6 +79,7 @@ Some concepts used:
 
 # Documentation
 
+<pre align="start">
 - [Swagger](https://swagger.io/)
 
 The comunication with the app works only throught the api gateway.
@@ -83,11 +87,19 @@ The application port is 8080.
 Swagger UI port is 8081.
 I also add a insomnia collection to help you test the api.
 
+</pre>
+
 # Disclaimer
+
+<pre align="start">
 
 1 - On my design i was considering implement more 3 services, Shop, Cancel and Value-Reversal but i didn't have time to implement them.
 2 - I suffered with a bug with swagger ui that cannot mount the curl command to test the api, the problem occurs with properties that are number, for example the amount, i tried to fix it but i didn't found any solution for it.
 
+</pre>
+
 # Thanks
 
+<p>
 Hope you enjoy my project, i'm open to feedbacks and suggestions. Thank you!
+</p>
