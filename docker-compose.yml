@@ -1,34 +1,46 @@
-version: "3.7"
+version: "3"
 services:
-  # krakend_ce:
-  #   # Watch mode is only to use on development
-  #   image: devopsfaith/krakend:watch
-  #   container_name: krakend_ce
-  #   volumes:
-  #     - ./config/krakend:/etc/krakend
-  #   ports:
-  #     - "1234:1234"
-  #     - "8080:8080"
-  #     - "8090:8090"
-  #   depends_on:
-  #     - rabbitmq
-  #     - database
-  #   command: ["run", "-d", "-c", "/etc/krakend/krakend.json"]
-  #   networks:
-  #     - "microservices_network"
+  krakend_ce:
+    #Watch mode is only to use on development
+    image: devopsfaith/krakend:watch
+    container_name: krakend_ce
+    volumes:
+      - ./config/krakend:/etc/krakend
+    ports:
+      - "1234:1234"
+      - "8080:8080"
+      - "8090:8090"
+    depends_on:
+      - rabbitmq
+      - database
+    command: ["run", "-d", "-c", "/etc/krakend/krakend.json"]
+    networks:
+      - "microservices_network"
+
+  # Swagger-ui
+  swagger_ui:
+    image: swaggerapi/swagger-ui:unstable
+    container_name: swagger_ui
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./config/swagger:/usr/share/nginx/html/swagger
+    environment:
+      - API_URL=/swagger/swagger.yml
+    networks:
+      - "microservices_network"
 
   # Statement-consult-api
   statement_consult_api:
-    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: ./microservices/statement-consult/Dockerfile
     container_name: statement_consult_api
+    user: "1000:1000"
     volumes:
-      - ./microservices/statement-consult:/app
-    working_dir: /app
-    ports:
-      - "3000:3000"
-    expose:
-      - "3000"
-    command: ["npm", "run", "start:dev"]
+      - ./microservices/statement-consult:/app/statement-consult
+    entrypoint: wait-for database:5432 -t 40 -- ./docker-entrypoint.sh
+    working_dir: /app/statement-consult
     depends_on:
       - rabbitmq
     environment:
@@ -45,25 +57,22 @@ services:
       DB_PASSWORD: postgres
       DB_HOST: database
       DB_PORT: 5432
-
     networks:
       - "microservices_network"
 
   # Statement-processor-api
   statement_processor_api:
-    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: ./microservices/statement-processor/Dockerfile
     container_name: statement_processor_api
+    user: "1000:1000"
     volumes:
-      - ./microservices/statement-processor:/app
-    working_dir: /app
-    ports:
-      - "3001:3001"
-    expose:
-      - "3001"
-    command: ["npm", "run", "start:dev"]
+      - ./microservices/statement-processor:/app/statement-processor
+    entrypoint: wait-for database:5432 -t 40 -- ./docker-entrypoint.sh
+    working_dir: /app/statement-processor
     depends_on:
       - rabbitmq
-      - database
     environment:
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
@@ -72,27 +81,28 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: redis_password
-      PORT: 3001
+      PORT: 3004
       DB_NAME: statement_processor
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_HOST: database
       DB_PORT: 5432
     networks:
-      - "microservices_network"
+      microservices_network:
+        aliases:
+          - statement_processor_api
 
   # Depost-api
   deposit_api:
-    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: ./microservices/deposit/Dockerfile
     container_name: deposit_api
+    user: "1000:1000"
     volumes:
-      - ./microservices/deposit:/app
-    ports:
-      - "3002:3002"
-    expose:
-      - "3002"
-    working_dir: /app
-    command: ["npm", "run", "start:dev"]
+      - ./microservices/deposit:/app/deposit
+    entrypoint: wait-for database:5432 -t 40 -- ./docker-entrypoint.sh
+    working_dir: /app/deposit
     depends_on:
       - rabbitmq
     environment:
@@ -116,16 +126,15 @@ services:
 
   # Withdraw-api
   withdraw_api:
-    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: ./microservices/withdraw/Dockerfile
     container_name: withdraw_api
+    user: "1000:1000"
     volumes:
-      - ./microservices/withdraw:/app
-    working_dir: /app
-    ports:
-      - "3003:3003"
-    expose:
-      - "3003"
-    command: ["npm", "run", "start:dev"]
+      - ./microservices/withdraw:/app/withdraw
+    entrypoint: wait-for database:5432 -t 40 -- ./docker-entrypoint.sh
+    working_dir: /app/withdraw
     depends_on:
       - rabbitmq
     environment:
@@ -143,7 +152,9 @@ services:
       DB_HOST: database
       DB_PORT: 5432
     networks:
-      - "microservices_network"
+      microservices_network:
+        aliases:
+          - withdraw_api
 
   redis:
     image: redis:6.2-alpine
@@ -191,7 +202,6 @@ services:
     volumes:
       - development_data:/var/lib/postgresql/data
       - ./config/postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-
     ports:
       - "5432:5432"
     networks:

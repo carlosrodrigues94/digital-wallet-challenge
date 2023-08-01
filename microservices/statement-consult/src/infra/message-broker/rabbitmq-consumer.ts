@@ -1,8 +1,8 @@
-import { connect, Connection, Channel, ConsumeMessage } from 'amqplib';
 import { RabbitMQConfig } from '@/config/rabbitmq.config';
 import { ConsumerEvents } from '@/data/enums/events.enum';
 import { HandleCreatedOrUpdatedStatementEventUseCaseFactory } from '@/presentation/factories/handle-created-or-updated-statement-event-usecase.factory';
-import { RedisMessageRepository } from '@/infra/repositories/redis-message.repository';
+import { connect, Connection, Channel, ConsumeMessage } from 'amqplib';
+import { RedisMessageRepository } from '../repositories/redis-message.repository';
 
 export class RabbitMQConsumer {
   private readonly rabbitMQUrl: string;
@@ -10,7 +10,6 @@ export class RabbitMQConsumer {
   private readonly routingKey = '';
   private readonly exchangeType = 'fanout';
   private retryConnectionMaxAttempts = 5;
-
   private connection: Connection;
   private channel: Channel;
 
@@ -21,13 +20,15 @@ export class RabbitMQConsumer {
   ) {
     const { host, password, port, user } = this.rabbitMQConfig;
     this.rabbitMQUrl = `amqp://${user}:${password}@${host}:${port}`;
+
     this.redisMessageRepository.connect();
   }
 
   async startConsumer() {
     this.connection = await this.tryConnectionOrRetry();
-
     this.channel = await this.connection.createChannel();
+
+    this.redisMessageRepository.connect();
 
     await this.channel.assertExchange(
       this.rabbitMQConfig.exchanges.wallet,
@@ -52,7 +53,7 @@ export class RabbitMQConsumer {
 
   async handleMessage(message: ConsumeMessage | null) {
     if (!message) return;
-    let data: any;
+    let data: { messageId: string; event: string; message: any };
     try {
       data = JSON.parse(message.content.toString());
       this.channel.ack(message);
@@ -85,8 +86,8 @@ export class RabbitMQConsumer {
       }
 
       await this.redisMessageRepository.markMessageProcessed({
-        messageId: data.messageId,
         consumerName: this.queueName,
+        messageId: data.messageId,
       });
     }
   }
@@ -95,7 +96,6 @@ export class RabbitMQConsumer {
     let retryConnectionMaxAttempts = 0;
 
     if (retryConnectionMaxAttempts === this.retryConnectionMaxAttempts) {
-      console.error('Could not connect to RabbitMQ');
       return;
     }
 
@@ -105,8 +105,10 @@ export class RabbitMQConsumer {
         this.tryConnectionOrRetry,
       );
       retryConnectionMaxAttempts = 0;
+      console.info('[RabbitMQ] Consumer Connected');
       return connection;
     } catch (err) {
+      console.info('[RabbitMQ] Consumer connection error');
       await new Promise((resolve) => setTimeout(resolve, 3000));
       return this.tryConnectionOrRetry();
     }

@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { knexConfig } from '@/config/knex.config';
 import { InfraModule } from '@/infra.module';
 import { DbGetStatementUseCaseFactory } from '@/presentation/factories/db-get-statement-usecase.factory';
-import { AppController } from '@/presentation/controllers/app.controller';
+import { GetStatementController } from '@/presentation/controllers/get-statement.controller';
 import { HandleCreatedOrUpdatedStatementEventUseCaseFactory } from '@/presentation/factories/handle-created-or-updated-statement-event-usecase.factory';
 import { rabbitMqConfig } from '@/config/rabbitmq.config';
 import { ApplicationConsumerAdapter } from '@/infra/adapters/application-consumer.adapter';
@@ -19,7 +19,7 @@ import { redisConfig } from '@/config/redis.config';
     }),
     InfraModule,
   ],
-  controllers: [AppController],
+  controllers: [GetStatementController],
   providers: [
     {
       provide: DbGetStatementUseCaseFactory,

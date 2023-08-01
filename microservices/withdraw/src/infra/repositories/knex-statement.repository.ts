@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import {
   UpdateStatementRepositoryParams,
   UpdateStatementRepository,
-} from '@/data/repositories/insert-or-update-statement.repository';
+} from '@/data/repositories/update-statement.repository';
 import {
   FindOneStatementRepository,
   FindOneStatementRepositoryParams,

@@ -4,6 +4,25 @@
     "port": 8080,
     "timeout": "3s",
     "extra_config": {
+        "security/cors": {
+            "allow_origins": [
+                "*"
+            ],
+            "allow_methods": [
+                "GET",
+                "HEAD",
+                "POST",
+                "OPTIONS",
+                "PUT"
+            ],
+            "expose_headers": [
+                "Content-Length",
+                "Content-Type"
+            ],
+            "allow_headers": [
+                "Accept-Language"
+            ]
+        },
         "telemetry/logging": {
             "level": "ERROR",
             "prefix": "[KRAKEND]",
@@ -21,24 +40,29 @@
     },
     "endpoints": [
         {
-            "endpoint": "/statement",
-            "method": "GET",
+            "endpoint": "/statements",
+            "input_query_strings": [
+                "userId"
+            ],
             "input_headers": [
                 "Authorization",
                 "Content-Type"
             ],
+            "output_encoding": "no-op",
+            "method": "GET",
             "backend": [
                 {
                     "host": [
-                        "http://statement_api:3000"
+                        "http://statement_consult_api:3000"
                     ],
-                    "url_pattern": "/statement",
+                    "url_pattern": "/statements",
                     "extra_config": {}
                 }
             ]
         },
         {
             "endpoint": "/deposits",
+            "output_encoding": "no-op",
             "method": "POST",
             "input_headers": [
                 "Authorization",
@@ -56,7 +80,8 @@
             ]
         },
         {
-            "endpoint": "/withdrawals",
+            "endpoint": "/withdraws",
+            "output_encoding": "no-op",
             "method": "POST",
             "input_headers": [
                 "Authorization",
@@ -65,9 +90,9 @@
             "backend": [
                 {
                     "host": [
-                        "http://withdrawal_api:3003"
+                        "http://withdraw_api:3003"
                     ],
-                    "url_pattern": "/withdrawals",
+                    "url_pattern": "/withdraws",
                     "extra_config": {}
                 }
             ]

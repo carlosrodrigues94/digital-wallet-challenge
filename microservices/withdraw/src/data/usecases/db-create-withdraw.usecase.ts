@@ -7,7 +7,7 @@ import { GenerateUniqueIdService } from '@/data/services/generate-unique-id.serv
 import { WithdrawEntity } from '@/domain/entities/withdraw.entity';
 import { WithdrawCreatedEventEmitter } from '@/data/events/emit-withdraw-created.event';
 import { FindOneStatementRepository } from '@/data/repositories/find-one-statement.repository';
-import { ApplicationException } from '../exceptions/application.exception';
+import { ApplicationException } from '@/data/exceptions/application.exception';
 
 export class DBCreateWithdrawUsecase implements CreateWithdrawUseCase {
   constructor(
@@ -28,7 +28,7 @@ export class DBCreateWithdrawUsecase implements CreateWithdrawUseCase {
     if (statement.amount < params.amount) {
       throw new ApplicationException(
         'Withdraw not authorized: Insufficient funds',
-        404,
+        400,
       );
     }
 

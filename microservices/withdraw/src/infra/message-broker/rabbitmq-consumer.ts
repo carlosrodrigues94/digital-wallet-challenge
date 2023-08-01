@@ -96,7 +96,6 @@ export class RabbitMQConsumer {
     let retryConnectionMaxAttempts = 0;
 
     if (retryConnectionMaxAttempts === this.retryConnectionMaxAttempts) {
-      console.error('Could not connect to RabbitMQ');
       return;
     }
 
@@ -106,8 +105,11 @@ export class RabbitMQConsumer {
         this.tryConnectionOrRetry,
       );
       retryConnectionMaxAttempts = 0;
+      console.info('[RabbitMQ] Consumer connected');
       return connection;
     } catch (err) {
+      console.info('[RabbitMQ] Consumer connection error');
+
       await new Promise((resolve) => setTimeout(resolve, 3000));
       return this.tryConnectionOrRetry();
     }

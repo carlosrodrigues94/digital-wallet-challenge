@@ -17,14 +17,11 @@ export class HandleCreatedOrUpdatedStatementEventUseCase
     });
 
     if (!statement || !statement.updatedAt) {
-      console.log('IF 1');
       await this.upsertStatement(params);
       return;
     }
 
     if (!params.updatedAt && statement.updatedAt) {
-      console.log('IF 2');
-
       return;
     }
 
@@ -33,12 +30,8 @@ export class HandleCreatedOrUpdatedStatementEventUseCase
       statement.updatedAt &&
       new Date(params.updatedAt) < new Date(statement.updatedAt)
     ) {
-      console.log('IF 3');
-
       return;
     }
-
-    console.log('IF 4');
 
     await this.upsertStatement(params);
   }

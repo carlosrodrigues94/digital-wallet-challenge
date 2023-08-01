@@ -1,6 +1,6 @@
 import { StatementEntity } from '@/domain/entities/statement.entity';
 import { HandleEventUseCase } from '@/domain/usecases/handle-event.usecase';
-import { UpdateStatementRepository } from '@/data/repositories/insert-or-update-statement.repository';
+import { UpdateStatementRepository } from '@/data/repositories/update-statement.repository';
 import { FindOneStatementRepository } from '@/data/repositories/find-one-statement.repository';
 import { CreateStatementRepository } from '@/data/repositories/create-statement.repository';
 

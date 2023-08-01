@@ -1,0 +1,28 @@
+# .dockerignore
+
+# Files and directories specific to your development environment
+.git
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Editor-specific files
+.vscode
+.idea
+
+# Other build-related files and directories
+dist
+tmp
+coverage
+test
+
+# Logs and other runtime-generated files
+logs
+
+# Ignore files related to version control systems
+.dockerignore
+.gitignore
+
+# Ignore OS-specific files (if your host system is macOS or Windows)
+.DS_Store
+Thumbs.db

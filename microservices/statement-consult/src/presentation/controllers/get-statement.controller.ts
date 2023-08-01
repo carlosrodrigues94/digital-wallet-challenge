@@ -3,7 +3,7 @@ import { DbGetStatementUseCaseFactory } from '@/presentation/factories/db-get-st
 import { DBGetStatementUsecase } from '@/data/usecases/db-get-statement.usecase';
 
 @Controller('/statements')
-export class AppController {
+export class GetStatementController {
   private getStatementUseCase: DBGetStatementUsecase;
   constructor(
     private readonly dbGetStatementUseCaseFactory: DbGetStatementUseCaseFactory,

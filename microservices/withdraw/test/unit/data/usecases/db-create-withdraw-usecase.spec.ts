@@ -1,6 +1,7 @@
 import { DBCreateWithdrawUsecase } from '@/data/usecases/db-create-withdraw.usecase';
 import { CreateWithdrawUseCaseParams } from '@/domain/usecases/create-withdraw.usecase';
 import { messageBrokerMock } from '@test/mocks/message-broker.mock';
+import { statementRepositoryMock } from '@test/mocks/statement-repository.mock';
 import { uniqueIdServiceMock } from '@test/mocks/unique-id-service.mock';
 import { withdrawEntityMock } from '@test/mocks/withdraw-entity.mock';
 import { withdrawRepositoryMock } from '@test/mocks/withdraw-repository.mock';
@@ -10,6 +11,7 @@ describe('DbCreateWithdrawUseCase', () => {
     messageBrokerMock,
     withdrawRepositoryMock,
     uniqueIdServiceMock,
+    statementRepositoryMock,
   );
   it('should create withdraw successfully', async () => {
     const params: CreateWithdrawUseCaseParams = {

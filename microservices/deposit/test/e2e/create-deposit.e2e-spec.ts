@@ -16,11 +16,10 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await new Promise((resolve) => setTimeout(() => resolve(app.init()), 5000));
+    await new Promise((resolve) => setTimeout(() => resolve(app.init()), 3000));
   });
 
   it('/deposits (POST)', async () => {
-    console.log('ENV ===>', process.env.RABBITMQ_USER);
     const body: CreateDepositDTO = {
       amount: 100,
       source: 'pix',

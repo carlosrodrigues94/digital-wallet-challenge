@@ -1,0 +1,235 @@
+swagger: "2.0"
+info:
+  title: "Wallet API Gateway"
+  version: "1.0.0"
+host: "localhost:8080"
+basePath: "/"
+schemes:
+  - "http"
+paths:
+  /statements:
+    get:
+      summary: "Get user statements"
+      produces:
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          enum:
+            - "f1aee895-e2c7-4125-869c-379acec4ef21"
+          in: "query"
+          required: true
+          type: "string"
+
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                format: "uuid"
+              userId:
+                type: "string"
+              amount:
+                type: "integer"
+                example: "1000"
+              createdAt:
+                type: "string"
+                format: "date-time"
+                example: "2023-08-01T00:00:03.548Z"
+              updatedAt:
+                type: "string"
+                format: "date-time"
+                example: "2023-08-01T00:00:03.548Z"
+        404:
+          description: "Not found"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Statement not found"
+              statusCode:
+                type: "integer"
+                example: "404"
+              timestamp:
+                type: "string"
+                format: "date-time"
+                example: "2023-08-01T01:46:36.776Z"
+              path:
+                type: "string"
+                example: "/statements?userId=f1aee895-e2c7-4125-869c-379acec4ef21"
+  /deposits:
+    post:
+      summary: "Make a deposit"
+      produces: ["application/json", "text/plain"]
+
+      description: "Make a deposit"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "body"
+          required: true
+          schema:
+            format: uuid
+            type: "string"
+            example: "f1aee895-e2c7-4125-869c-379acec4ef21"
+
+        - name: "amount"
+          in: "body"
+          required: true
+          description: amount in cents
+          schema:
+            type: number
+
+        - name: "source"
+          in: "body"
+          required: true
+          schema:
+            type: "string"
+            example: "pix"
+
+        - name: "sourceDescription"
+          in: "body"
+          required: false
+          schema:
+            type: "string"
+            example: "pix-bank-name"
+        - name: "sourceTransactionId"
+          in: "body"
+          required: true
+          schema:
+            type: "string"
+            example: "pix-id"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                format: "uuid"
+              userId:
+                type: "string"
+              amount:
+                type: "integer"
+                example: "1000"
+              createdAt:
+                type: "string"
+                format: "date-time"
+                example: "2023-08-01T00:00:03.548Z"
+              sourceDescription:
+                type: "string"
+                example: "pix-bank-name"
+              sourceTransactionId:
+                type: "string"
+                example: "pix-id"
+              source:
+                type: "string"
+                example: "pix"
+        400:
+          description: "Validation error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "array"
+                example:
+                  - "sourceTransactionId should not be empty"
+                  - "sourceTransactionId must be a string"
+                  - "source should not be empty"
+                  - "source must be a string"
+                  - "userId should not be empty"
+                  - "userId must be a UUID"
+              error:
+                type: "string"
+                example: "Bad Request"
+              statusCode:
+                type: "string"
+                example: "400"
+  /withdraws:
+    post:
+      summary: "Make a withdraw"
+      produces: ["application/json", "text/plain"]
+
+      description: "Make a withdraw"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "body"
+          required: true
+          schema:
+            format: uuid
+            type: "string"
+            example: "f1aee895-e2c7-4125-869c-379acec4ef21"
+
+        - name: "amount"
+          in: "body"
+          required: true
+          description: amount in cents
+          schema:
+            type: number
+
+        - name: "source"
+          in: "body"
+          required: true
+          schema:
+            type: "string"
+            example: "pix"
+
+        - name: "sourceTransactionId"
+          in: "body"
+          required: true
+          schema:
+            type: "string"
+            example: "pix-id"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                format: "uuid"
+              userId:
+                type: "string"
+              amount:
+                type: "integer"
+                example: "1000"
+              createdAt:
+                type: "string"
+                format: "date-time"
+                example: "2023-08-01T00:00:03.548Z"
+              sourceTransactionId:
+                type: "string"
+                example: "pix-id"
+              source:
+                type: "string"
+                example: "pix"
+        400:
+          description: "Validation error"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "array"
+                example:
+                  - "sourceTransactionId should not be empty"
+                  - "sourceTransactionId must be a string"
+                  - "source should not be empty"
+                  - "source must be a string"
+                  - "userId should not be empty"
+                  - "userId must be a UUID"
+              error:
+                type: "string"
+                example: "Bad Request"
+              statusCode:
+                type: "string"
+                example: "400"

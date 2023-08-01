@@ -13,6 +13,11 @@
     "**/*.(t|j)s"
   ],
   "coverageDirectory": "../coverage",
+  "coverageReporters": [
+    "text-summary",
+    "lcov",
+    "text"
+  ],
   "testEnvironment": "node",
   "roots": [
     "<rootDir>/src",

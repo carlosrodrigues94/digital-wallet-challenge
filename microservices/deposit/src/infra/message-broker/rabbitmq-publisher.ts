@@ -66,8 +66,6 @@ export class RabbitMQPublisher implements DepositCreatedEventEmitter {
     let retryConnectionMaxAttempts = 0;
 
     if (retryConnectionMaxAttempts === this.retryConnectionMaxAttempts) {
-      console.error('Could not connect to RabbitMQ');
-
       return;
     }
 
@@ -77,11 +75,9 @@ export class RabbitMQPublisher implements DepositCreatedEventEmitter {
         this.tryConnectionOrRetry,
       );
       retryConnectionMaxAttempts = 0;
-      console.log('RABBITMQ SUCCESS =>');
 
       return connection;
     } catch (err) {
-      console.error('RABBITMQ ERROR=>', err);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       return this.tryConnectionOrRetry();
     }

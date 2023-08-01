@@ -59,7 +59,6 @@ export class RabbitMQPublisher
     let retryConnectionMaxAttempts = 0;
 
     if (retryConnectionMaxAttempts === this.retryConnectionMaxAttempts) {
-      console.error('Could not connect to RabbitMQ');
       return;
     }
 
@@ -69,8 +68,10 @@ export class RabbitMQPublisher
         this.tryConnectionOrRetry,
       );
       retryConnectionMaxAttempts = 0;
+      console.info('[RabbitMQ] Publisher Connected');
       return connection;
     } catch (err) {
+      console.info('[RabbitMQ] Publisher connection error');
       await new Promise((resolve) => setTimeout(resolve, 3000));
       return this.tryConnectionOrRetry();
     }

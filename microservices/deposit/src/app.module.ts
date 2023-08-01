@@ -14,6 +14,7 @@ import { RabbitMQPublisher } from './infra/message-broker/rabbitmq-publisher';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [knexConfig, rabbitMqConfig],
+      envFilePath: ['.env'],
     }),
 
     InfraModule,

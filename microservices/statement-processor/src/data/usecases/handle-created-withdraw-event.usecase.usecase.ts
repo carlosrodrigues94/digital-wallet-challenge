@@ -35,7 +35,7 @@ export class HandleCreatedWithdrawEventUseCase
       source,
     });
 
-    const statement = await this.findOrCreateStatementIfNotExists({
+    const statement = await this.statementRepository.findOneStatement({
       userId,
     });
 
@@ -48,25 +48,5 @@ export class HandleCreatedWithdrawEventUseCase
     );
 
     this.messageBroker.emitStatementUpdatedEvent(updated);
-  }
-
-  private async findOrCreateStatementIfNotExists(params: { userId: string }) {
-    const statement = await this.statementRepository.findOneStatement({
-      userId: params.userId,
-    });
-
-    if (!statement) {
-      const result = await this.statementRepository.createStatement({
-        amount: 0,
-        createdAt: new Date().toISOString(),
-        id: this.uniqueIdService.generate(),
-        updatedAt: null,
-        userId: params.userId,
-      });
-
-      return result;
-    }
-
-    return statement;
   }
 }
